@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Freebet + Lay</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f0f4ff;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Calculadora Freebet + Lay</h2>
+
+    <label for="freebet">Freebet (R$)</label>
+    <input type="number" id="freebet" placeholder="Ex: 100">
+
+    <label for="back">Odd Back</label>
+    <input type="number" id="back" step="0.01" placeholder="Ex: 9">
+
+    <label for="lay">Odd Lay</label>
+    <input type="number" id="lay" step="0.01" placeholder="Ex: 8">
+
+    <label for="comissao">Comissão Lay (%)</label>
+    <input type="number" id="comissao" step="0.01" placeholder="Ex: 4.5">
+
+    <label for="cashback">Cashback Lay (%)</label>
+    <input type="number" id="cashback" step="0.01" placeholder="Ex: 5">
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div id="resultado" class="result" style="display:none;"></div>
+  </div>
+
+  <script>
+    function calcular() {
+      let F = parseFloat(document.getElementById("freebet").value);
+      let B = parseFloat(document.getElementById("back").value);
+      let L = parseFloat(document.getElementById("lay").value);
+      let c = parseFloat(document.getElementById("comissao").value) / 100;
+      let k = parseFloat(document.getElementById("cashback").value) / 100;
+
+      if (isNaN(F) || isNaN(B) || isNaN(L) || isNaN(c) || isNaN(k)) {
+        alert("Preencha todos os campos corretamente!");
+        return;
+      }
+
+      // Fórmula Stake Lay
+      let stakeLay = (F * (B - 1)) / ((L - 1) * (1 - k) + (1 - c));
+      let respons = (L - 1) * stakeLay;
+
+      // Retorno em caso Back ganhar (freebet vencedora)
+      let retornoBack = F * (B - 1) - respons * (1 - k);
+
+      // Retorno em caso Lay ganhar
+      let ganhoLay = stakeLay * (1 - c);
+      let retornoLay = ganhoLay;
+
+      document.getElementById("resultado").style.display = "block";
+      document.getElementById("resultado").innerHTML = `
+        ✅ <b>Stake Lay:</b> R$ ${stakeLay.toFixed(2)} <br>
+        ✅ <b>Responsabilidade:</b> R$ ${respons.toFixed(2)} <br>
+        🎯 <b>Retorno se Back vencer:</b> R$ ${retornoBack.toFixed(2)} <br>
+        🎯 <b>Retorno se Lay vencer:</b> R$ ${retornoLay.toFixed(2)}
+      `;
+    }
+  </script>
+</body>
+</html>
